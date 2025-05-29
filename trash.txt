@@ -1,0 +1,34 @@
+# Разделение данных и классификация
+
+df['author_label'] = df['author'].map({'Zoshchenko': 0, 'Karamzin': 1})
+
+X = df[['avg_word_length', 'avg_sent_length']]
+y = df['author_label']
+
+X_train, X_test, y_train, y_test = train_test_split(X, y,
+                                                    test_size=0.3,
+                                                    random_state=42)
+
+# Модель 1 ("на глаз")
+model1 = LogisticRegression()
+
+dummy_X = np.zeros((2, 2))
+dummy_y = np.array([0, 1])
+
+model1.fit(dummy_X, dummy_y)
+
+model1.coef_ = np.array([[11, 1]])
+model1.intercept_ = np.array([-78])
+
+# Модель 2 (LogisticRegression)
+model2 = LogisticRegression()
+model2.fit(X_train, y_train)
+
+y_pred1 = model1.predict(X_test)
+y_pred2 = model2.predict(X_test)
+
+print("Accuracy:", accuracy_score(y_test, y_pred1))
+print("Confusion Matrix:\n", confusion_matrix(y_test, y_pred1))
+
+print("Accuracy:", accuracy_score(y_test, y_pred2))
+print("Confusion Matrix:\n", confusion_matrix(y_test, y_pred2))
